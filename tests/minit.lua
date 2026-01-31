@@ -8,7 +8,12 @@ require("lazy.minit").setup({
   spec = {
     {
       dir = vim.uv.cwd(),
-      opts = {},
+
+      ---@type nx_console.Config
+      opts = {
+        log_level = vim.log.levels.TRACE
+      },
+
       dependencies = {
         "nvim-lua/plenary.nvim",
         "nvim-telescope/telescope.nvim",
