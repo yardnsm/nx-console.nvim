@@ -1,0 +1,27 @@
+#!/usr/bin/env -S nvim -l
+-- run with: :lua MiniDoc.generate() or :luafile scripts/docs
+
+vim.env.LAZY_STDPATH = ".docs"
+load(vim.fn.system("curl -s https://raw.githubusercontent.com/folke/lazy.nvim/main/bootstrap.lua"))()
+
+require("lazy.minit").setup({
+  spec = {
+    "echasnovski/mini.doc",
+  },
+})
+
+local MiniDoc = require("mini.doc")
+_G.MiniDoc = MiniDoc
+
+-- Define order for the docs
+local files = {
+  "lua/nx-console/init.lua", -- Main module, introduction, TOC, quick start
+  "lua/nx-console/config.lua", -- Configuration options
+  "plugin/nx-console.lua", -- Commands
+  "lua/neo-tree/sources/nx-console/init.lua", -- Neo-tree integration
+  "lua/neo-tree/sources/nx-console/commands.lua", -- Neo-tree commands
+}
+
+MiniDoc.generate(files, "doc/nx-console.txt")
+
+-- vim: ft=lua:

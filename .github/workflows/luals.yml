@@ -1,0 +1,57 @@
+# Shamelessy taken from:
+# https://github.com/nickjvandyke/opencode.nvim/blob/main/.github/workflows/lua-ls-check.yml
+
+name: LuaLS Diagnostics
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  luals-diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Neovim
+        run: |
+          curl -L https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux-x86_64.tar.gz -o /opt/nvim.tar.gz
+          mkdir /opt/nvim
+          tar xzf /opt/nvim.tar.gz -C /opt/nvim
+          mv /opt/nvim/nvim-linux-x86_64/* /opt/nvim
+          echo "/opt/nvim/bin" >> $GITHUB_PATH
+
+      - name: Install Lua Language Server
+        run: |
+          curl -L "https://github.com/LuaLS/lua-language-server/releases/download/3.17.1/lua-language-server-3.17.1-linux-x64.tar.gz" -o /opt/lls.tar.gz
+          mkdir /opt/lls
+          tar -xzf /opt/lls.tar.gz -C /opt/lls
+          echo "/opt/lls/bin" >> $GITHUB_PATH
+
+      - name: Clone luvit-meta
+        run: git clone --depth=1 https://github.com/Bilal2453/luvit-meta /opt/luvit-meta
+
+      - name: Clone planery.nvim
+        run: git clone --depth=1 https://github.com/nvim-lua/plenary.nvim /opt/plenary.nvim
+
+      - name: Clone snacks.nvim
+        run: git clone --depth=1 https://github.com/folke/snacks.nvim /opt/snacks.nvim
+
+      - name: Clone neo-tree.nvim
+        run: git clone --depth=1 https://github.com/nvim-neo-tree/neo-tree.nvim /opt/neo-tree.nvim
+
+      - name: Clone nui.nvim
+        run: git clone --depth=1 https://github.com/MunifTanjim/nui.nvim /opt/nui.nvim
+
+      - name: Clone telescope.nvim
+        run: git clone --depth=1 https://github.com/nvim-telescope/telescope.nvim /opt/telescope.nvim
+
+      - name: Clone fzf-lua
+        run: git clone --depth=1 https://github.com/ibhagwan/fzf-lua /opt/fzf-lua
+
+      - name: Run Lua LS diagnostics
+        run: |
+          lua-language-server --configpath .luarc.ci.json --check=.

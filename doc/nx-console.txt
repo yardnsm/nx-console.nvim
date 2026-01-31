@@ -1,0 +1,263 @@
+                                                               *nx-console.nvim*
+                                                                    *nx-console*
+  Introduction ............................................. |nx-console.nvim|
+  Configuration ................................... |nx-console-configuration|
+  Commands ............................................. |nx-console-commands|
+  Neo-tree Integration .................................. |nx-console-neotree|
+  Neo-tree Commands ............................ |nx-console-neotree-commands|
+
+------------------------------------------------------------------------------
+
+# Introduction ~
+
+nx-console.nvim is a Neovim plugin that brings Nx Console functionality
+to Neovim. It provides integration with the nxls language server to
+interact with Nx workspaces directly from your editor - same as the
+official VS Code plugin.
+
+Requirements:
+  - Neovim 0.11 or later
+  - Node.js 20 or later (for running nxls)
+
+Features:
+  - Integrated language server (nxls) for Nx workspace intelligence
+  - Interactive pickers for projects, targets, and generators (currently
+    supporting Telescope, fzf-lua, Snacks)
+  - Neo-tree integration for visual workspace navigation
+  - Automatic nxls binary management (download & updates)
+  - LSP features for nx.json and project.json files
+  - Run Nx targets directly from Neovim
+
+# Quick Start ~
+                                                   *nx-console-quickstart*
+
+After installation, nx-console.nvim works with minimal configuration.
+
+Basic setup: >lua
+  require('nx-console').setup({})
+
+  -- Neo-tree.nvim integration
+  require('neo-tree').setup({
+    sources = { "nx-console", "filesystem", "buffers", "git_status" },
+    ["nx-console"] = {
+      auto_refresh_on_workspace_change = true,
+    },
+  })
+<
+
+Also see |nx-console-neotree| for Neo-tree.nvim integration.
+
+## Basic Usage ~
+
+Using Telescope: >vim
+  :Telescope nx-console projects
+  :Telescope nx-console targets
+  :Telescope nx-console targets_current
+  :Telescope nx-console generators
+<
+
+Using Lua API (works with any picker): >lua
+  -- List all projects
+  require('nx-console').pickers.projects()
+
+  -- List targets for a specific project
+  require('nx-console').pickers.targets({ project = "my-app" })
+
+  -- List targets for the current file's project
+  require('nx-console').pickers.targets_current()
+
+  -- List available generators
+  require('nx-console').pickers.generators()
+
+  -- Explicitly choose a picker
+  require('nx-console').pickers.projects({ picker = "fzf" })
+  require('nx-console').pickers.projects({ picker = "snacks" })
+  require('nx-console').pickers.projects({ picker = "telescope" })
+<
+
+Then navigate to the nx-console source in Neo-tree.
+
+## Recommended Keymaps ~
+                                                      *nx-console-keymaps*
+>lua
+  -- Nx project pickers
+  vim.keymap.set('n', '<leader>np', function()
+    require('nx-console').pickers.projects()
+  end, { desc = 'Nx Projects' })
+
+  vim.keymap.set('n', '<leader>nt', function()
+    require('nx-console').pickers.targets()
+  end, { desc = 'Nx Targets' })
+
+  vim.keymap.set('n', '<leader>nT', function()
+    require('nx-console').pickers.targets_current()
+  end, { desc = 'Nx Targets (current file)' })
+
+  vim.keymap.set('n', '<leader>ng', function()
+    require('nx-console').pickers.generators()
+  end, { desc = 'Nx Generators' })
+<
+------------------------------------------------------------------------------
+                                                                     *M.setup()*
+                               `M.setup`({opts})
+Setup function for nx-console.nvim.
+
+Initializes the plugin with user configuration.
+
+Parameters ~
+{opts} `(optional)` `(nx_console.Config)` Optional configuration table. See |nx_console.Config|.
+
+Usage ~
+>lua
+  -- Use defaults
+  require('nx-console').setup({})
+<
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                      *nx-console-configuration*
+                                                             *nx_console.Config*
+
+------------------------------------------------------------------------------
+Configuration options for nx-console.nvim.
+
+All fields are optional. Default values are shown below.
+
+Class ~
+{nx_console.Config}
+
+
+Default configuration: ~
+
+>lua
+  defaults = {
+    -- Whether to start the client lazily (when opening Neo-tree or pickers, for
+    -- example). Set to false to start when setup() is called (only within Nx
+    -- workspace).
+    lazy_start = true,
+
+    -- Picker to use for Nx pickers (nil = auto-detect)
+    -- Options: "telescope", "fzf", "snacks", nil
+    ---@type nx_console.Config.PickerOption
+    picker = nil,
+
+    nxls = {
+      -- Path to nxls binary. If nil, will use downloaded binary
+      ---@type string | nil
+      nxls_path = nil,
+
+      -- Node command to use to start nxls
+      node_command = { "node" },
+
+      -- Download settings
+      download = {
+        -- Enable automatic download of nxls
+        auto = true,
+
+        -- Override the auto-detected nxls revision (submodule SHA)
+        ---@type string | nil
+        nxls_revision = nil,
+      },
+
+      -- LSP callbacks
+      ---@type vim.lsp.client.on_init_cb
+      on_init = function() end,
+
+      ---@type vim.lsp.client.on_attach_cb
+      on_attach = function() end,
+
+      ---@type vim.lsp.client.on_exit_cb
+      on_exit = function() end,
+    },
+
+    -- The nx command used as a prefix
+    nx_command = { "nx" },
+
+    -- Command runner function.
+    ---@type nx_console.Config.CommandRunner
+    command_runner = require("nx-console.runners").snacks(),
+  }
+<
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                           *nx-console-commands*
+
+# Commands ~
+
+nx-console.nvim provides the following user commands:
+
+`:NxConsole start` - Start the nxls language server
+`:NxConsole stop` - Stop the nxls language server
+`:NxConsole refresh` - Refresh the Nx workspace (restarts nxls and clears
+                       daemon cache)
+`:NxConsole download` - Manually download/update the nxls binary
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                            *nx-console-neotree*
+
+# Neo-tree Integration ~
+
+nx-console.nvim provides a Neo-tree source for browsing your Nx workspace
+visually. The tree shows projects organized by folder structure, with
+targets listed under each project.
+
+Setup: >lua
+  require('neo-tree').setup({
+    sources = {
+      "nx-console",
+      "filesystem",
+      "buffers",
+      "git_status",
+    },
+    nx_console = {
+      -- Auto-refresh when workspace changes (default: true)
+      auto_refresh_on_workspace_change = true,
+
+      -- Override mappings (these are the defaults)
+      window = {
+        mappings = {
+          ["<CR>"] = "open_or_run",
+          ["o"] = "open_or_run",
+          ["R"] = "refresh",
+        }
+      }
+    },
+  })
+<
+
+## Caching ~
+
+The tree is cached to avoid unnecessary LSP requests. The cache is
+automatically invalidated when:
+
+  - The Nx workspace is refreshed (via LSP notification)
+  - Force refresh is requested
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                   *nx-console-neotree-commands*
+
+# Neo-tree Commands ~
+
+These commands are available when using the nx-console Neo-tree source.
+They are mapped to keybindings in the Neo-tree window.
+
+`open_or_run` - Smart action that behaves differently based on node type:
+  - On Nx target: Run the target
+  - On project/folder/target group: Toggle expansion
+  Mapped to `<CR>` and `o` by default.
+
+`run_target` - Run the Nx target at the current node.
+
+`refresh` - Force refresh the Nx workspace tree, bypassing the cache.
+  Mapped to `R` by default.
+
+`show_debug_info` - Print debug information about the current Neo-tree
+state. Useful for troubleshooting.
+
+
+ vim:tw=78:ts=8:noet:ft=help:norl:

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "Building nxls from source..."
+
+# Check if submodule exists
+if [[ ! -d "deps/nx-console" ]]; then
+  echo "Error: nx-console submodule not found"
+  echo "Run: git submodule update --init --recursive"
+  exit 1
+fi
+
+# Check for yarn
+if ! command -v yarn &> /dev/null; then
+  echo "Error: yarn is not installed"
+  exit 1
+fi
+
+# Check for node
+if ! command -v node &> /dev/null; then
+  echo "Error: node is not installed"
+  exit 1
+fi
+
+cd deps/nx-console
+
+echo "Installing dependencies..."
+yarn install --frozen-lockfile
+
+echo "Building nxls..."
+yarn nx run nxls:build
+
+echo "Build complete!"
+echo "Output is in: deps/nx-console/dist/apps/nxls"

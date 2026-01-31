@@ -1,0 +1,10 @@
+M.setup()	nx-console.txt	/*M.setup()*
+nx-console	nx-console.txt	/*nx-console*
+nx-console-commands	nx-console.txt	/*nx-console-commands*
+nx-console-configuration	nx-console.txt	/*nx-console-configuration*
+nx-console-keymaps	nx-console.txt	/*nx-console-keymaps*
+nx-console-neotree	nx-console.txt	/*nx-console-neotree*
+nx-console-neotree-commands	nx-console.txt	/*nx-console-neotree-commands*
+nx-console-quickstart	nx-console.txt	/*nx-console-quickstart*
+nx-console.nvim	nx-console.txt	/*nx-console.nvim*
+nx_console.Config	nx-console.txt	/*nx_console.Config*

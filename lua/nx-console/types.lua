@@ -1,0 +1,1 @@
+---@alias nx_console.WorkspacePath string

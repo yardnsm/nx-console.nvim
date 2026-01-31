@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "workspace": {
+    "library": [
+      "/opt/nvim/share/nvim/runtime/lua",
+      "/opt/luvit-meta/library",
+      "/opt/plenary.nvim/lua",
+      "/opt/snacks.nvim/lua",
+      "/opt/neo-tree.nvim/lua",
+      "/opt/nui.nvim/lua",
+      "/opt/telescope.nvim/lua",
+      "/opt/fzf-lua/lua",
+      "./lua"
+    ],
+    "checkThirdParty": "Disable"
+  },
+  "diagnostics": {
+    "globals": ["prepare_tree"]
+  }
+}

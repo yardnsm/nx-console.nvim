@@ -1,0 +1,9 @@
+base: lua51
+lua_versions:
+  - luajit
+
+globals:
+  Snacks:
+    any: true
+  vim:
+    any: true

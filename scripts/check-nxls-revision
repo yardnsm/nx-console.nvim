@@ -1,0 +1,77 @@
+#!/usr/bin/env -S nvim -l
+
+-- Check that revision.lua matches the submodule SHA and that a release exists
+
+-- Add lua directory to package path
+vim.opt.runtimepath:prepend(vim.fn.getcwd())
+
+local revision = require("nx-console.nxls.revision")
+local download = require("nx-console.nxls.download")
+
+local function get_nx_console_submodule_sha()
+  local result = vim.system({ "git", "rev-parse", "HEAD:deps/nx-console" }):wait()
+
+  if result.code ~= 0 then
+    return nil, "git command failed: " .. (result.stderr or "")
+  end
+
+  return vim.trim(result.stdout)
+end
+
+local function check_release_exists(sha)
+  local release_url = download.get_release_url(sha)
+  local result = vim.system({ "curl", "-f", "-I", "-s", release_url }):wait()
+  return result.code == 0
+end
+
+local function main()
+  print("Checking nxls revision...")
+  print("")
+
+  -- Get revision from revision.lua
+  local revision_sha = revision.get()
+  print("revision.lua contains: " .. revision_sha)
+
+  -- Get submodule SHA
+  local submodule_sha, err = get_nx_console_submodule_sha()
+  if not submodule_sha then
+    print("ERROR: " .. err)
+    os.exit(1)
+  end
+  print("Submodule SHA: " .. submodule_sha)
+  print("")
+
+  -- Compare
+  if revision_sha ~= submodule_sha then
+    print("ERROR: Revision mismatch!")
+    os.exit(1)
+  end
+
+  print("Revisions match")
+  print("")
+
+  -- Check if release exists
+  print("Checking for GitHub release: nxls-" .. revision_sha)
+  local exists = check_release_exists(revision_sha)
+
+  if not exists then
+    print("ERROR: " .. (err or "Release not found"))
+    print("")
+    print("Before merging, you must:")
+    print("  1. Ensure the nxls build workflow has run successfully")
+    print("  2. Verify that a release with tag 'nxls-" .. revision_sha .. "' exists")
+    print("")
+    print("You may need to trigger the build-nxls workflow manually.")
+    print("")
+    os.exit(1)
+  end
+
+  print("Release found")
+  print("")
+  print("All checks passed!")
+  print("")
+end
+
+main()
+
+-- vim: ft=lua:

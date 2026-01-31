@@ -1,0 +1,3 @@
+[submodule "deps/nx-console"]
+	path = deps/nx-console
+	url = https://github.com/nrwl/nx-console

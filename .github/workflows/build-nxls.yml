@@ -1,0 +1,93 @@
+name: Build nxls
+
+on:
+  workflow_dispatch:
+    inputs:
+      nxls_revision:
+        description: 'Nxls Revision (SHA of the used nx-console submodule)'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: 'deps/nx-console/yarn.lock'
+
+      - name: Build nxls
+        run: ./scripts/build-nxls
+
+      - name: Package nxls
+        run: |
+          cd deps/nx-console/dist/apps/nxls
+          tar -czf ../../../../../nxls.tar.gz .
+
+      - name: Generate checksum
+        run: |
+          sha256sum nxls.tar.gz > nxls.tar.gz.sha256
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nxls
+          path: |
+            nxls.tar.gz
+            nxls.tar.gz.sha256
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: nxls
+          path: artifacts
+
+      - name: Display structure
+        run: ls -R artifacts
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ -n "${{ github.event.inputs.nxls_revision }}" ]]; then
+            echo "nxls_revision=nxls-${{ github.event.inputs.nxls_revision }}" >> $GITHUB_OUTPUT
+          else
+            # Get the nx-console submodule SHA
+            SUBMODULE_SHA=$(git rev-parse HEAD:deps/nx-console)
+            echo "nxls_revision=nxls-${SUBMODULE_SHA}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.nxls_revision }}
+          name: nxls ${{ steps.version.outputs.nxls_revision }}
+          body: |
+            nxls build for nx-console.nvim
+
+            ## Contents
+            - nxls.tar.gz - Compiled nxls language server
+            - nxls.tar.gz.sha256 - Checksum for verification
+          files: |
+            artifacts/nxls.tar.gz
+            artifacts/nxls.tar.gz.sha256
+          draft: false
+          prerelease: false

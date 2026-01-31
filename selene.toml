@@ -1,0 +1,7 @@
+std = "vim"
+
+[lints]
+mixed_table="allow"
+
+[config]
+allow_empty_tables = true
