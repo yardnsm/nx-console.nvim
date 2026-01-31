@@ -31,6 +31,10 @@ local defaults = {
   -- workspace).
   lazy_start = true,
 
+  -- Log level for nx-console messages
+  ---@type vim.log.levels
+  log_level = vim.log.levels.INFO,
+
   -- Picker to use for Nx pickers (nil = auto-detect)
   -- Options: "telescope", "fzf", "snacks", nil
   ---@type nx_console.Config.PickerOption
