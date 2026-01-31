@@ -14,7 +14,7 @@ end
 
 M.debug = function(message)
   vim.schedule(function()
-    vim.notify(format_message(message), vim.log.levels.INFO, { title })
+    vim.notify(format_message(message), vim.log.levels.DEBUG, { title })
   end)
 end
 

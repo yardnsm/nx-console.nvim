@@ -34,7 +34,7 @@ function M.ensure_downloaded(callback)
   -- Check if already downloaded
   local installed_version = files.get_installed_version()
   if installed_version == target_revision then
-    log.info("nxls " .. target_revision .. " already installed")
+    log.debug("nxls " .. target_revision .. " already installed")
     callback(nil)
     return
   end
@@ -99,13 +99,13 @@ function M.download_nxls(target_revision, callback)
         return
       end
 
-      -- Delete temporary tarball
-      vim.fn.delete(tarball_path)
-
-      -- Mark version as installed
-      files.set_installed_version(target_revision)
-
       vim.schedule(function()
+        -- Delete temporary tarball
+        vim.fn.delete(tarball_path)
+
+        -- Mark version as installed
+        files.set_installed_version(target_revision)
+
         log.info("nxls " .. target_revision .. " installed successfully")
         callback(nil)
       end)
