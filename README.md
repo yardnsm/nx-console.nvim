@@ -47,6 +47,7 @@ By using the official language server, nx-console.nvim provides the same reliabl
 ```lua
 {
   "yardnsm/nx-console.nvim",
+  submodules = false,
   dependencies = {
     "nvim-lua/plenary.nvim",
 
