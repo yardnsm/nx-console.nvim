@@ -13,7 +13,7 @@ describe("nx-console.nvim sanity test", function()
       local success, err = pcall(function()
         assert.is_true(nxls_client:is_running())
 
-        local response, err = nxls_client:get_client():request_sync(types.request_types.NxVersionRequest, {})
+        local response, err = nxls_client:get_client():request_sync(types.request_types.NxVersionRequest, {}, 50000)
 
         assert.is_nil(err)
         assert.is_table(response)
