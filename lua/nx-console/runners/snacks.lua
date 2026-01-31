@@ -2,19 +2,6 @@
 
 local log = require("nx-console.log")
 
----@type snacks.terminal.Opts
-local defaults = {
-  auto_close = false,
-  win = {
-    wo = {
-      winbar = "Nx Console",
-    },
-    title = "Nx Console",
-    position = "right",
-    height = 0.4,
-  },
-}
-
 ---@param opts snacks.terminal.Opts | nil
 ---@return nx_console.Config.CommandRunner
 local function create_snacks_runner(opts)
@@ -30,6 +17,21 @@ local function create_snacks_runner(opts)
       log.error("Snacks.nvim terminal is not available")
       return
     end
+
+    local title = "[Nx Console] " .. cmd
+
+    ---@type snacks.terminal.Opts
+    local defaults = {
+      auto_close = false,
+      win = {
+        wo = {
+          winbar = title,
+        },
+        title = title,
+        position = "right",
+        height = 0.4,
+      },
+    }
 
     opts = vim.tbl_deep_extend("force", {}, defaults, opts or {})
 
