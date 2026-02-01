@@ -100,7 +100,8 @@ Command runners are responsible for executing Nx CLI commands when you run targe
 
 nx-console.nvim provides built-in runners and makes it easy to create custom ones:
 
-**Built-in Runners:**
+<details>
+<summary><b>Built-in Runners</b></summary>
 
 ```lua
 -- Snacks.nvim terminal runner (default)
@@ -120,9 +121,21 @@ require("nx-console").setup({
 require("nx-console").setup({
   command_runner = require("nx-console.runners").yeet(),
 })
+
+-- toggleterm.nvim runner
+-- Requires: https://github.com/akinsho/toggleterm.nvim
+require("nx-console").setup({
+  command_runner = require("nx-console.runners").toggleterm({
+    direction = "horizontal",
+    close_on_exit = false,
+  }),
+})
 ```
 
-**Custom Runners:**
+</details>
+
+<details>
+<summary><b>Custom Runners</b></summary>
 
 Create your own by providing a function that accepts a command string:
 
@@ -133,7 +146,33 @@ require("nx-console").setup({
     vim.cmd("!" .. cmd)
   end,
 })
+
+-- Using a floating terminal
+require("nx-console").setup({
+  command_runner = function(cmd)
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win = vim.api.nvim_open_win(buf, true, {
+      relative = "editor",
+      width = math.floor(vim.o.columns * 0.8),
+      height = math.floor(vim.o.lines * 0.8),
+      row = math.floor(vim.o.lines * 0.1),
+      col = math.floor(vim.o.columns * 0.1),
+      style = "minimal",
+      border = "rounded",
+    })
+    vim.fn.termopen(cmd)
+  end,
+})
+
+-- Using tmux
+require("nx-console").setup({
+  command_runner = function(cmd)
+    vim.fn.system(string.format("tmux split-window -h '%s'", cmd))
+  end,
+})
 ```
+
+</details>
 
 The command string passed to runners is the full Nx CLI command (e.g., `nx run my-app:build --watch`). See `:help nx-console-runners` for more details.
 

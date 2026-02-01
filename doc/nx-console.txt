@@ -249,6 +249,21 @@ Configuration: >lua
 
 Requires: [yeet.nvim](https://github.com/samhh/yeet.nvim)
 
+### ToggleTerm Runner ~
+
+Uses toggleterm.nvim for command execution.
+
+Configuration: >lua
+  require("nx-console").setup({
+    command_runner = require("nx-console.runners").toggleterm({
+      direction = "horizontal",
+      close_on_exit = false,
+    }),
+  })
+<
+
+Requires: [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)
+
 ## Custom Runners ~
 
 Create your own command runner by providing a function that accepts
@@ -284,6 +299,19 @@ yeet's task management system.
 
 Parameters ~
 {opts} `(Options | nil)`
+Return ~
+`(fun(cmd: string): nil)` The command runner function
+
+------------------------------------------------------------------------------
+                                                                  *M.toggleterm*
+                                 `M.toggleterm`
+Creates a toggleterm.nvim command runner.
+
+This runner uses toggleterm.nvim to execute Nx commands in a terminal
+window with configurable appearance and behavior.
+
+Parameters ~
+{opts} `(TermCreateArgs | nil)` Options to pass to toggleterm Terminal
 Return ~
 `(fun(cmd: string): nil)` The command runner function
 

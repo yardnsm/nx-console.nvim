@@ -49,6 +49,21 @@
 ---
 --- Requires: [yeet.nvim](https://github.com/samhh/yeet.nvim)
 ---
+--- ### ToggleTerm Runner ~
+---
+--- Uses toggleterm.nvim for command execution.
+---
+--- Configuration: >lua
+---   require("nx-console").setup({
+---     command_runner = require("nx-console.runners").toggleterm({
+---       direction = "horizontal",
+---       close_on_exit = false,
+---     }),
+---   })
+--- <
+---
+--- Requires: [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)
+---
 --- ## Custom Runners ~
 ---
 --- Create your own command runner by providing a function that accepts
@@ -84,5 +99,15 @@ M.snacks = require("nx-console.runners.snacks")
 ---@param opts Options | nil
 ---@return nx_console.Config.CommandRunner The command runner function
 M.yeet = require("nx-console.runners.yeet")
+
+--- Creates a toggleterm.nvim command runner.
+---
+--- This runner uses toggleterm.nvim to execute Nx commands in a terminal
+--- window with configurable appearance and behavior.
+---
+---@diagnostic disable-next-line: undefined-doc-param
+---@param opts TermCreateArgs | nil Options to pass to toggleterm Terminal
+---@return nx_console.Config.CommandRunner The command runner function
+M.toggleterm = require("nx-console.runners.toggleterm")
 
 return M

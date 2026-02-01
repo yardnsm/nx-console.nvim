@@ -1,5 +1,6 @@
 M.setup()	nx-console.txt	/*M.setup()*
 M.snacks	nx-console.txt	/*M.snacks*
+M.toggleterm	nx-console.txt	/*M.toggleterm*
 M.yeet	nx-console.txt	/*M.yeet*
 nx-console	nx-console.txt	/*nx-console*
 nx-console-commands	nx-console.txt	/*nx-console-commands*
