@@ -52,6 +52,9 @@ jobs:
       - name: Clone fzf-lua
         run: git clone --depth=1 https://github.com/ibhagwan/fzf-lua /opt/fzf-lua
 
+      - name: Clone yeet.nvim
+        run: git clone --depth=1 https://github.com/samharju/yeet.nvim /opt/yeet.nvim
+
       - name: Run Lua LS diagnostics
         run: |
           lua-language-server --configpath .luarc.ci.json --check=.

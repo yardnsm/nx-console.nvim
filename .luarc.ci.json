@@ -13,6 +13,7 @@
       "/opt/nui.nvim/lua",
       "/opt/telescope.nvim/lua",
       "/opt/fzf-lua/lua",
+      "/opt/yeet.nvim/lua",
       "./lua"
     ],
     "checkThirdParty": "Disable"
