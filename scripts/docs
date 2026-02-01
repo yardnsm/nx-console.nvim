@@ -18,6 +18,7 @@ local files = {
   "lua/nx-console/init.lua", -- Main module, introduction, TOC, quick start
   "lua/nx-console/config.lua", -- Configuration options
   "plugin/nx-console.lua", -- Commands
+  "lua/nx-console/runners/init.lua", -- Command runners
   "lua/neo-tree/sources/nx-console/init.lua", -- Neo-tree integration
   "lua/neo-tree/sources/nx-console/commands.lua", -- Neo-tree commands
 }

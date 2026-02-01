@@ -1,6 +1,6 @@
 local log = require("nx-console.log")
 
----@param opts table | nil
+---@param opts Options | nil
 ---@return nx_console.Config.CommandRunner
 local function create_yeet_runner(opts)
   return function(cmd)

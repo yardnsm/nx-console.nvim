@@ -96,21 +96,46 @@ require("neo-tree").setup({
 
 ### Command Runners
 
-nx-console.nvim supports different command runners for executing Nx targets. Choose one that fits your workflow:
+Command runners are responsible for executing Nx CLI commands when you run targets or generators from nx-console.nvim. Since Nx is a CLI tool, this plugin wraps command execution to integrate with your preferred terminal environment.
+
+nx-console.nvim provides built-in runners and makes it easy to create custom ones:
+
+**Built-in Runners:**
 
 ```lua
--- Snacks.nvim terminal (default)
-command_runner = require("nx-console.runners").snacks()
+-- Snacks.nvim terminal runner (default)
+-- Requires: https://github.com/folke/snacks.nvim
+require("nx-console").setup({
+  command_runner = require("nx-console.runners").snacks({
+    auto_close = false,
+    win = {
+      position = "right",
+      height = 0.4,
+    },
+  }),
+})
 
--- toggleterm.nvim
-command_runner = require("nx-console.runners").toggleterm()
-
--- Custom runner
-command_runner = function(cmd)
-  -- Your custom command execution logic
-  vim.cmd("!" .. cmd)
-end
+-- yeet.nvim runner
+-- Requires: https://github.com/samhh/yeet.nvim
+require("nx-console").setup({
+  command_runner = require("nx-console.runners").yeet(),
+})
 ```
+
+**Custom Runners:**
+
+Create your own by providing a function that accepts a command string:
+
+```lua
+-- Simple shell execution
+require("nx-console").setup({
+  command_runner = function(cmd)
+    vim.cmd("!" .. cmd)
+  end,
+})
+```
+
+The command string passed to runners is the full Nx CLI command (e.g., `nx run my-app:build --watch`). See `:help nx-console-runners` for more details.
 
 ## Usage
 

@@ -1,6 +1,88 @@
+-- vim: tw=78:
+
+---@toc_entry Command Runners
+---@tag nx-console-runners
+---@text
+--- # Command Runners ~
+---
+--- Command runners are responsible for executing Nx CLI commands when you run
+--- targets or generators using nx-console.nvim. nx-console.nvim provides
+--- built-in runners and allows you to create custom ones.
+---
+--- ## How it Works ~
+---
+--- When you run an Nx target nx-console.nvim:
+---
+---   1. Constructs the full Nx command (e.g., "nx run my-app:build")
+---   2. Passes it to the configured command_runner function
+---   3. The runner executes the command in your preferred environment
+---
+--- ## Built-in Runners ~
+---
+--- ### Snacks Runner (Default) ~
+---
+--- Uses Snacks.nvim terminal integration.
+---
+--- Configuration: >lua
+---   require("nx-console").setup({
+---     command_runner = require("nx-console.runners").snacks({
+---       auto_close = false,
+---       win = {
+---         position = "right",
+---         height = 0.4,
+---       },
+---     }),
+---   })
+--- <
+---
+--- Requires: [snacks.nvim](https://github.com/folke/snacks.nvim)
+---
+--- ### Yeet Runner ~
+---
+--- Uses yeet.nvim for command execution.
+---
+--- Configuration: >lua
+---   require("nx-console").setup({
+---     command_runner = require("nx-console.runners").yeet(),
+---   })
+--- <
+---
+--- Requires: [yeet.nvim](https://github.com/samhh/yeet.nvim)
+---
+--- ## Custom Runners ~
+---
+--- Create your own command runner by providing a function that accepts
+--- a command string and executes it:
+---
+--- Example using vim.cmd: >lua
+---   require("nx-console").setup({
+---     command_runner = function(cmd)
+---       vim.cmd("!" .. cmd)
+---     end,
+---   })
+--- <
+
+---@private
 local M = {}
 
+--- Creates a Snacks.nvim command runner.
+---
+--- This runner uses Snacks.nvim terminal to execute Nx commands in a terminal
+--- window with configurable appearance and behavior.
+---
+---@diagnostic disable-next-line: undefined-doc-param
+---@param opts snacks.terminal.Opts | nil
+---@return nx_console.Config.CommandRunner The command runner function
 M.snacks = require("nx-console.runners.snacks")
+
+--- Creates a yeet.nvim command runner.
+---
+--- This runner uses yeet.nvim to execute Nx commands, integrating with
+--- yeet's task management system.
+---
+---@diagnostic disable-next-line: undefined-doc-param
+---@param opts Options | nil
+---@return nx_console.Config.CommandRunner The command runner function
 M.yeet = require("nx-console.runners.yeet")
 
 return M
