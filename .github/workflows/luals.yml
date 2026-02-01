@@ -55,6 +55,9 @@ jobs:
       - name: Clone yeet.nvim
         run: git clone --depth=1 https://github.com/samharju/yeet.nvim /opt/yeet.nvim
 
+      - name: Clone toggleterm.nvim
+        run: git clone --depth=1 https://github.com/akinsho/toggleterm.nvim /opt/toggleterm.nvim
+
       - name: Run Lua LS diagnostics
         run: |
           lua-language-server --configpath .luarc.ci.json --check=.

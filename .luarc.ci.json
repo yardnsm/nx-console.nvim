@@ -14,6 +14,7 @@
       "/opt/telescope.nvim/lua",
       "/opt/fzf-lua/lua",
       "/opt/yeet.nvim/lua",
+      "/opt/toggleterm.nvim/lua",
       "./lua"
     ],
     "checkThirdParty": "Disable"
