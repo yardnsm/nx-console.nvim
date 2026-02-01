@@ -246,6 +246,4 @@ For detailed documentation, see:
 
 ## License
 
-Apache 2.0 © [Yarden Sod-Moriah](http://ysm.sh/)
-
-See [LICENSE](LICENSE) for details.
+Apache 2.0 © [Yarden Sod-Moriah](http://ysm.sh/) ⋅ See [LICENSE](LICENSE) for details
