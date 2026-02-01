@@ -4,7 +4,7 @@
 
 > **⚠️ Work in Progress**: This plugin is under active development. Features and APIs may change.
 
-<img width="1601" height="868" alt="nx-console.nvim" src="https://github.com/user-attachments/assets/fd0b844a-f018-435f-9d55-e1f7f705066c" />
+![nx-console.nvim](https://github.com/user-attachments/assets/a77f32c2-b4a2-4b45-a76a-dbec086e1e8c)
 
 ## Features
 
