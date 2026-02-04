@@ -1,3 +1,4 @@
+local async = require("plenary.async")
 local config = require("nx-console.config")
 local log = require("nx-console.log")
 local client = require("nx-console.nxls.client")
@@ -60,6 +61,9 @@ function M.ensure_client_started(callback)
     callback(nxls)
   end
 end
+
+---@async
+M.ensure_client_started_async = async.wrap(M.ensure_client_started, 1)
 
 ---@param buf integer
 function M.ensure_client_attached(buf)
