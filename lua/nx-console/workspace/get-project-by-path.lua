@@ -1,4 +1,4 @@
-local nxls = require("nx-console.nxls.client")
+local nxls = require("nx-console.nxls")
 local types = require("nx-console.nxls.types")
 
 ---@class nx_console.NxProjectByPathRequestOptions
@@ -13,13 +13,13 @@ local types = require("nx-console.nxls.types")
 ---@return nx_console.NxProjectByPathResponse | nil project Project configuration
 ---@return string | nil error Error message if failed
 local function get_project_by_path(options)
-  local client_inst = nxls.get_nxls()
+  local nxls_client = nxls.ensure_client_started_async()
 
-  if not client_inst:is_running() then
+  if not nxls_client:is_running() then
     return nil, "Nxls client is not running"
   end
 
-  local err, result = client_inst:request_async(types.request_types.NxProjectByPathRequest, options or {})
+  local err, result = nxls_client:request_async(types.request_types.NxProjectByPathRequest, options or {})
 
   if err then
     return nil, err

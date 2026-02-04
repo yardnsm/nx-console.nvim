@@ -6,7 +6,8 @@ local util = require("nx-console.nxls.util")
 
 local M = {}
 
---- Start nxls client on-demand if not already running
+--- Start nxls client on-demand if not already running. Note that this might not actually start the
+--- client if the user has explicitly stopped it or if not in an Nx workspace.
 ---@param callback? fun(nxls: nx_console.NxlsClient) Optional callback when client is ready
 function M.ensure_client_started(callback)
   local nxls = client.get_nxls()
@@ -63,7 +64,10 @@ function M.ensure_client_started(callback)
 end
 
 ---@async
-M.ensure_client_started_async = async.wrap(M.ensure_client_started, 1)
+---@return nx_console.NxlsClient
+function M.ensure_client_started_async()
+  return async.wrap(M.ensure_client_started, 1)()
+end
 
 ---@param buf integer
 function M.ensure_client_attached(buf)

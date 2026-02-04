@@ -11,27 +11,19 @@ return function(opts)
   local picker = opts.picker
   local current_file = vim.fn.expand("%:p")
 
-  -- Ensure nxls client is started before running picker
-  require("nx-console.nxls").ensure_client_started(function(nxls)
-    if not nxls:is_running() then
-      log.error("Nxls client is not running")
-      return
-    end
+  async.run(function()
+    local project, err = get_project_by_path({ projectPath = current_file })
 
-    async.run(function()
-      local project, err = get_project_by_path({ projectPath = current_file })
+    vim.schedule(function()
+      if err then
+        log.error("Failed to get project: " .. err)
+        return
+      end
 
-      vim.schedule(function()
-        if err then
-          log.error("Failed to get project: " .. err)
-          return
-        end
-
-        if project and project.name then
-          local targets_picker = require("nx-console.pickers.targets")
-          targets_picker({ project = project.name, picker = picker })
-        end
-      end)
-    end, util.noop)
-  end)
+      if project and project.name then
+        local targets_picker = require("nx-console.pickers.targets")
+        targets_picker({ project = project.name, picker = picker })
+      end
+    end)
+  end, util.noop)
 end

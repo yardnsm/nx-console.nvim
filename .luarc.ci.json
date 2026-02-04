@@ -20,6 +20,8 @@
     "checkThirdParty": "Disable"
   },
   "diagnostics": {
-    "globals": ["prepare_tree"]
+    "globals": [
+      "prepare_tree"
+    ]
   }
 }

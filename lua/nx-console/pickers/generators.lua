@@ -14,52 +14,45 @@ return function(opts)
   local picker = opts.picker
 
   -- Ensure nxls client is started before running picker
-  require("nx-console.nxls").ensure_client_started(function(nxls)
-    async.run(function()
-      if not nxls:is_running() then
-        log.error("Nxls client is not running")
-        return
-      end
-
-      local generators, err = get_generators()
-      if err then
-        vim.schedule(function()
-          log.error("Failed to get generators: " .. err)
-        end)
-        return
-      end
-
-      if not generators or #generators == 0 then
-        vim.schedule(function()
-          log.warn("No generators found in workspace")
-        end)
-        return
-      end
-
-      local items = vim.tbl_map(function(generator)
-        local id = nx_id_builder.build_generator_id(generator.name)
-        local display = id
-        if generator.data.description then
-          display = display .. " - " .. generator.data.description
-        end
-
-        return {
-          id = id,
-          display = display,
-          ordinal = id,
-          data = { generator = generator },
-        }
-      end, generators)
-
+  async.run(function()
+    local generators, err = get_generators()
+    if err then
       vim.schedule(function()
-        require("nx-console.pickers.core").pick({
-          prompt = "Nx Generators",
-          items = items,
-          on_select = function(item)
-            actions.run_generator(item.id)
-          end,
-        }, picker)
+        log.error("Failed to get generators: " .. err)
       end)
-    end, util.noop)
-  end)
+      return
+    end
+
+    if not generators or #generators == 0 then
+      vim.schedule(function()
+        log.warn("No generators found in workspace")
+      end)
+      return
+    end
+
+    local items = vim.tbl_map(function(generator)
+      local id = nx_id_builder.build_generator_id(generator.name)
+      local display = id
+      if generator.data.description then
+        display = display .. " - " .. generator.data.description
+      end
+
+      return {
+        id = id,
+        display = display,
+        ordinal = id,
+        data = { generator = generator },
+      }
+    end, generators)
+
+    vim.schedule(function()
+      require("nx-console.pickers.core").pick({
+        prompt = "Nx Generators",
+        items = items,
+        on_select = function(item)
+          actions.run_generator(item.id)
+        end,
+      }, picker)
+    end)
+  end, util.noop)
 end
