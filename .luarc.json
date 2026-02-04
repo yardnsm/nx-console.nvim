@@ -1,9 +1,10 @@
 {
-    "diagnostics.globals": [
-        "prepare_tree"
-    ],
-    "format.defaultConfig": {
-      "indent_style": "space",
-      "indent_size": "2"
-  }
+  "diagnostics.globals": [
+    "prepare_tree"
+  ],
+  "format.defaultConfig": {
+    "indent_style": "space",
+    "indent_size": "2"
+  },
+  "hint.await": true
 }

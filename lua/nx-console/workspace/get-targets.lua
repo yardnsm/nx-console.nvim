@@ -1,4 +1,4 @@
-local nxls = require("nx-console.nxls.client")
+local nxls = require("nx-console.nxls")
 local types = require("nx-console.nxls.types")
 
 ---@class nx_console.TargetInfo
@@ -19,14 +19,14 @@ local types = require("nx-console.nxls.types")
 local function get_targets(opts)
   opts = opts or {}
 
-  local client_inst = nxls.get_nxls()
+  local nxls_client = nxls.ensure_client_started_async()
 
-  if not client_inst:is_running() then
+  if not nxls_client:is_running() then
     return nil, "Nxls client is not running"
   end
 
   -- Get workspace to access all targets
-  local err, result = client_inst:request_async(types.request_types.NxWorkspaceRequest, { reset = false })
+  local err, result = nxls_client:request_async(types.request_types.NxWorkspaceRequest, { reset = false })
 
   if err then
     return nil, err

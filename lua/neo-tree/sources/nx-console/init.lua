@@ -258,17 +258,7 @@ M.navigate = function(state, path, path_to_reveal, force_refresh)
   end
   state.path = path
 
-  -- Ensure nxls client is started on-demand
-  nxls.ensure_client_started(function(nxls_instance)
-    -- After ensuring client is started (or confirmed not in Nx workspace)
-    if not nxls_instance:is_running() then
-      set_status_node("Nxls is not running", state)
-      return
-    end
-
-    -- Continue with navigation
-    M._navigate_internal(state, path, path_to_reveal, force_refresh)
-  end)
+  M._navigate_internal(state, path, path_to_reveal, force_refresh)
 end
 
 ---@private
