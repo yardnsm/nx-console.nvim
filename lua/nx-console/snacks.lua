@@ -22,7 +22,7 @@ M.source = {
     return { { item.text } }
   end,
 
-  layout = "vscode",
+  layout = "select",
 
   actions = {
     ---@param picker snacks.Picker
